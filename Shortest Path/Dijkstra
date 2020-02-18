@@ -1,0 +1,107 @@
+Starting with BFS Approach to find the shortest path but restrict us to have unweighted graph
+Now to determine the shortest path in a weighted graph we have following algo's:
+1) Dijkstra         Time Complexity : O( V^2 ) and using with min-priority queue : O( V + ElogV )  ( BFS with Greedy Modification )
+2) Bellman Ford     Time Complexity : O( V*E ) If E = O(V^2) , O( V^3 ) / ( Determine the Negative Cycle )
+3) Floyd Warshall   Time Complexity : O( V^3 ) / ( Shortest path between all pairs ) / Handle All positive / Negative weights
+
+Dijkstra's Algorithm :
+Step 1 : Intialize_single_source
+Step 2 : Using Min-priority Queue to pop out the vertex with minimum distance 
+Step 3 : Update the Unvisited Vertex Edges as if dis[u] + weight[u][v] < dist[v] 
+
+Dijsktra:
+#include<iostream>
+#include<vector>
+#include<list>
+#include<map>
+#include<queue>                  // priority_queue
+#include<limits.h>              // INT_MAX
+using namespace std;             
+typedef pair<int,int> pi;
+class graph
+{
+public:
+    int v;                                                      // No of Vertices
+    list< pair<int,int> > * edgeList;                          
+    // set< int , greater<int> > * edgeList;
+    graph(int vertices);                                     // Calling Default Constructor
+    void addedge(int src , int dest , int weight);          //  To Add Edge in Graph
+    void path(map<int,int> parent , int vertex);           // Recurssive Approach to print path
+    int dijkstra(int src,int dest);                        
+};
+graph::graph(int vertices)
+{
+        v = vertices;
+        edgeList = new list< pair<int,int> >[v];
+    // edgeList = new set< int , greater<int> >[v];
+}
+
+void graph::addedge(int src , int dest , int weight)  // Undirected graph
+{
+    edgeList[src].push_back(make_pair(dest,weight)); 
+    edgeList[dest].push_back(make_pair(src,weight));
+}
+
+void graph::path(map<int,int> parent , int vertex)
+{
+    if(parent[vertex] == -1) return;
+    path(parent , parent[vertex]);
+    cout << vertex << " ";
+}
+int graph::dijkstra(int src,int dest)
+{
+    int dis[this->v];                                // Distance value of ith vertex from source 
+    map<int,bool> vis;                              // Visited vertex or not
+    // Step 1 : Initialize_single_source
+    for(int vertex = 0 ; vertex < this->v ; vertex++) 
+        dis[vertex] = INT_MAX;
+    dis[src] = 0;
+    // Step 1 : Over
+    map<int,int> parent;
+    parent[src] = -1;
+    priority_queue< pi , vector<pi> , greater<pi> > pq;  // Min-priority queue
+    pq.push(make_pair(0,src));                          // Push the distance[source] , source
+    while(!pq.empty())
+    {
+        pi p = pq.top();                              // Step 2 : Pop out the vertex with minimum distance from source
+        pq.pop();                                    // Over
+        int u = p.second;                           // Representing "from"
+        if(u == dest)                               // If Destination reached
+        {
+            cout << "Shortest Path : ";
+            path(parent,dest);                   //    Print the path
+            cout << endl;
+            return dis[u];
+        }
+        if(!vis[u])                          // Check whether the vertex visited or not
+        {
+            vis[u] = 1;
+            for(auto it = edgeList[u].begin() ; it != edgeList[u].end() ; it++) // Relax or update the distance of vertices
+            {                                                                  // of the edge list of unvisited vertex
+               // pair<int,int> p = *it;
+                int v = (*it).first;                                         // Representing "to"
+                if(dis[u] + (*it).second < dis[v]) 
+                {
+                    dis[v] = dis[u] + (*it).second;                         // Step 3
+                    parent[v] = u;                                        // Set the parent
+                    pq.push(make_pair(dis[v],v));                       // Push new Candidate to the queue
+                }
+            }
+        }
+    }
+    cout << "Path Doesn't Exist";
+    return -1;
+}   
+int main(){
+
+    graph g(5);
+    g.addedge(0,1,2);
+    g.addedge(0,2,2);
+    g.addedge(2,4,6);
+    g.addedge(0,3,3);
+    g.addedge(1,3,7);
+    g.addedge(2,3,4);
+    g.addedge(3,4,6);
+    cout << "Shortest Distance : " << g.dijkstra(0,4);
+    return 0;
+}
