@@ -1,0 +1,33 @@
+Recurssion is merely an algorithmic structure that calls itself to solve a problem
+
+void recursive_func( status )
+{
+  if( terminating_condition == achieved )
+  { 
+    // Do something 
+    return
+  }
+  // Changes Here
+  recursive_func( status )
+}
+
+However DFS or Depth First Search is a searching algorithm for a tree like structure of solution 
+
+void DFS( current_status )
+{
+  if( terminating_condition == achieved )
+  { 
+    // Do something 
+    return
+  }
+  // Look the Search tree
+  for( node = 0 to search_points )
+  {
+    if( search_condition == True )
+    {
+      DFS( status )
+      // Changes Here
+    }
+  }
+  // FOR THE BACKTRACKING PURPOSE CONDITIONS ARE REVERT HERE
+}
