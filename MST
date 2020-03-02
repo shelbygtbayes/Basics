@@ -1,0 +1,83 @@
+MINIMUM SPANNING TREE APPLICATIONS
+1. SETTING UP TELEPHONE LINES / PIPELINES 
+2. BUILDING THE ROADS TO INTERCONNECT THE CITIES
+3. CLUSTER ANALYSIS
+4. IMAGE SEGMENTATION
+5. HANDWRITING RECOGNIZATION
+// SINCE O(ElogV)
+KRUSKAL APPROACH:
+1. SORT THE EDGES
+2. PICK THE EDGE (DIFFERENCE POINT) WHICH DOESN'T FORM CYCLE AND HAVE MINIMUM WEIGHT
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+// To Check the parent
+int root(int x,vector<int>parent)
+{
+    int _parent = parent[x];
+    while(x!= _parent)
+    {
+        x = _parent;
+        _parent = parent[x];
+    }
+    return x;
+}
+// Kruskal 
+int kruskal(vector< pair< int , vector<int> > >& graph) // { (w1, {src1, dest1}) ,  (w2, {src2, dest2}) , ....}
+{
+    int _min = 0;
+    // INITALIZE THE NODE WITH PARENT ITSELF
+    vector<int> parent;
+    for(int i = 0;i < graph.size();i++)
+        parent.push_back(i);
+    sort(graph.begin(),graph.end());
+    for(auto e : graph)
+    {
+        int w = e.first , src = e.second[0] , dest = e.second[1];
+        if(root(src) != root(dest))
+        {
+            _min+=w;
+            int src_root = parent[src] , dest_root = parent[dest];
+            parent[src_root] = parent[dest_root];
+        }
+    }
+    return _min;
+}
+
+// PRIMS
+
+1. GREEDY APPROACH
+2. VERTEX ARE SELECTED   O((V+E)logV)
+SIMPLE ALGO ( HERE DIS IS NOTHING BUT THE EDGE-WEIGHT )
+1. JUST LIKE DIJSTRTA TAKE A SOURCE VERTEX AND INITIALIZE THE DIS = 0 AND PUSH INTO QUEUE
+2. POP OUT THE VERTEX HAVING MINIMUM DISTANCE ( USING PRIORITY QUEUE )
+3. CHECK IF NOT VISITED PUSH THE (VERTEX, DIS) INTO THE QUEUE
+
+Considering graph as graph[src1] = { (w1,dest1) , (w2,dest2) , ....}  // ALL Nodes from src to dest1,2,..
+
+int prims(int src , vector< vector< pair<int,int> > >& graph)
+{
+    // TO PICK VERTEX OF MINIMUM EDGE-WEIGHT ( pair.first )
+    priority_queue< pair<int,int> , vector< pair<int,int> > , greater< pair<int,int> > > pq;
+    pq.push(make_pair(0,0));
+    map<int,bool> visited;
+    int ans = 0;
+    while(!pq.empty())
+    {
+        auto p = pq.top(); // PICKING VERTEX WITH MINIMUM EDGE_WEIGHT ( GREEDY )
+        pq.pop();
+        if(visited[p.second]) continue;
+        ans+= p.first;
+        visited[p.second] = true; // vertex
+        for(auto it : graph[src])
+        {
+            if(!visited[it.second]) // CONNECTED VERTEX
+            {
+                pq.push(make_pair(it.first,it.second)); // PUSHING CONNECTED VERTEX AND THEIR EDGE_WEIGHT
+            }
+        }
+    }
+    return ans;
+}
