@@ -1,0 +1,24 @@
+#include <bits/stdc++.h>
+using namespace std;
+int lower_bound(vector<int> arr,int v)
+{
+  int st = 0 , end = arr.size()-1;
+  // Can Remember from lower related to left /  st
+  while( st <= end )
+  {
+    int mid = st + (end - st)/2;
+    if( arr[mid] < v) 
+        st = mid+1;
+    else 
+      end = mid-1;
+  }
+  return st;
+}
+int main() {
+vector<int> v {1 , 3 , 6 , 8};
+int it = lower_bound(v,3);
+v.insert(v.begin()+it,1,3);
+for(auto i : v)
+  cout << i << " ";
+return 0;
+}
