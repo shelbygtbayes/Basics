@@ -1,0 +1,35 @@
+// DIJSTRA DOSEN'T WORK FOR NEGATIVE WEIGHTS
+// CAN STRUCK IN NEGATIVE WEIGHT CYCLE
+// BELLMAN CAN OVERCOME THE ABOVE DISADVANTAGE
+// MOREOVER USED FOR DISTRIBUTED SYSTEM NETWORKING
+// COMPLEXITY HIGH : O(V*E) 
+// CAN DETECT NEGATIVE CYCLE
+// Step 1 : INITIALIZE SINGLE SOURCE
+// RELAX ALL EDGES ( V-1 ) TIMES
+// Check Negative Cycles
+vector<int> bellman(vector<vector<int>> edges , int n , int src)
+{
+  vector<int> dis(n , INT_MAX);
+  dis[src] = 0;
+  for(int v = 1 ; v < n ; v++)
+  {
+     for(auto edge : edges)
+     {
+        int x = edge[0] , y = edge[1] , weight = edge[2];
+		if( dis[x] != INT_MAX and dis[y] > dis[x] + weight)
+			dis[y] = dis[x] + weight;
+     }
+  }
+  // Now Traverse the Edges again If Still we can relax --> then only due to Negative cycle possible
+  for(auto edge : edges)
+  {
+  	int x = edge[0] , y = edge[1] , weight = edge[2];
+	if( dis[x] != INT_MAX and dis[y] > dis[x] + weight)
+	{
+		cout << "Negative Cycle";
+		vector<int> ans;
+		return ans; 
+	}
+  }
+  return dis;
+}
