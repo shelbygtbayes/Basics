@@ -1,0 +1,47 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void swap(int ind1 ,int ind2 , vector<int> &arr)
+{
+    int temp = arr[ind1];
+    arr[ind1] = arr[ind2];
+    arr[ind2] = temp;
+}
+void heapify(vector<int> & arr , int index , int n)
+{
+    int left = 2*index + 1;
+    int right = 2*index+2;
+    int largest = index;
+    if(left < n and arr[left] > arr[largest])
+        largest = left;
+    if(right < n and arr[right] > arr[largest])
+        largest = right;
+    if(largest != index)
+    {
+        swap(index , largest , arr);
+        heapify(arr , largest , n);
+    }
+}
+void heapsort(vector<int> &arr)
+{
+    int n = arr.size();
+    for(int internal_node = n/2 - 1 ; internal_node >= 0 ; internal_node--)
+    {
+        heapify(arr , internal_node , n);
+    }
+    for(int node = n - 1 ; node > 0 ; node--)
+    {
+        swap( 0 , node , arr);
+        heapify(arr , 0 , node );
+    }
+    
+}
+int main()
+{
+    vector<int> arr{2,4,1,0};
+    heapsort(arr);
+    for(auto c : arr)
+        cout << c << " ";
+    return 0;
+}
