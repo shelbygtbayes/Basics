@@ -1,0 +1,102 @@
+// For Cut Points
+class Solution {
+public:
+    vector<int> ans;
+    void cutVertices(int u , unordered_map<int,int> & parent , int &time , vector<int> &low , vector<int> &dfsnum, unordered_map<int , vector<int> >&graph)
+    {
+        low[u] = dfsnum[u] = time++;
+        int child = 0;
+        for(auto v : graph[u])
+        {
+            if(v == parent[u]) continue;                                // Must Not be parent
+            else if(dfsnum[v] == -1)
+            {
+                parent[v] = u;
+                child++;
+                cutVertices(v , parent , time , low , dfsnum , graph);
+                
+                
+                if( parent[u] == -1 and child > 1)                // Root iff More than 1 child
+                {
+                    ans.push_back(u);
+                }
+                if( parent[u] != -1 and low[v] >= dfsnum[u])    //  Else Cut Point case
+                {
+                    ans.push_back(u);
+                }
+                
+                low[u] = min(low[u] , low[v]);
+            }
+            else                                             // Back Edge Case
+            {
+                low[u] = min( low[u] , dfsnum[v] );
+            }
+            
+        }
+    }
+    vector<int> criticalRouters(int n, vector<vector<int>>& connections) {
+        unordered_map<int , vector<int> > graph;
+       
+        vector<int> dfsnum(n , -1);
+        vector<int> low(n , -1);
+        int time = 0;
+        
+        for(auto edge : connections)
+        {
+            int u = edge[0] , v = edge[1];
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+        unordered_map<int,int>  parent;
+        ans.clear();
+        parent[0] = -1;
+        cutVertices(0,parent,time,low,dfsnum,graph);
+        for(auto c : ans)
+            cout << c << " ";
+        return ans;
+    }
+};
+//For Bridges
+class Solution {
+public:
+
+    void bridges(unordered_map<int , vector<int> > graph , int u , vector<vector<int>> &ans ,int &time ,vector< int > & dfsnum ,vector< int > & low,int parent)
+    {
+        low[u] = dfsnum[u] = time++;
+        for(auto v : graph[u])
+        {
+            if(v == parent)                                // Must Not be parent
+                continue;
+            if(dfsnum[v] == -1)
+            {
+                bridges(graph , v , ans , time , dfsnum , low , u);
+                
+                if(low[v] > dfsnum[u])                        // Bridge Case
+                {
+                    ans.push_back(vector<int>{u,v});
+                }
+                
+                low[u] = min(low[u] , low[v]);              // Update low by other low
+            }
+            else                              // Back Edge
+                low[u] = min(low[u] , dfsnum[v]);
+        }
+    }
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        unordered_map<int , vector<int> > graph;
+        vector<vector<int>> ans;
+        vector<int> dfsnum(n , -1);         // Visited Time / dfs number
+        vector<int> low(n , -1);          // Lowest value of dfsnum that can be reached 
+        int time = 0;
+        for(auto edge : connections)
+        {
+            int u = edge[0] , v = edge[1];
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+        int parent = -1;
+        bridges(graph , 0 , ans , time , dfsnum , low , parent);
+      
+        return ans;
+    }
+};
