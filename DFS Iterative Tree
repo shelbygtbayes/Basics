@@ -1,0 +1,14 @@
+stack< Node* > st;
+Node* curr = root;
+while(!st.empty() || curr != NULL)
+{
+  while(curr != NULL)
+    {
+        st.push(curr);
+        curr = curr->left;   
+    }
+    curr = st.top();
+    st.pop();
+    ans.push_back(curr->val);
+    curr = curr->right;
+}
