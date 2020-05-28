@@ -1,0 +1,29 @@
+c++ Built-in function
+To count no of ones in binary representation :
+int cnt = __builtin_popcount(n);
+
+        or 
+ int cnt = 0;
+ while(n!=0)
+ {
+    if(n%2==1)
+        cnt++;
+    n/=2;
+ }
+ 
+Count Sum in range ( 0 , num )
+vector<int> ans(num+1 , 0);
+ans[1] = 1;
+for(int ind = 2 ; ind <= num ; ind++)
+{
+    if( ind % 2 == 0)
+    {
+        ans[ind] = ans[ind / 2];
+    }
+    else
+    {
+        ans[ind] = 1 + ans[ind/2];
+    }
+}
+return ans;
+
