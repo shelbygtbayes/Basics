@@ -1,0 +1,79 @@
+#include<iostream>
+using namespace std;
+class stacks{
+  int *arr , *top , *next;
+  int free ;
+public:
+  stacks(int n , int k);
+  void push(int val, int id);
+  int pop(int id);
+  void show(int id);
+};
+stacks::stacks(int n , int k)
+{
+  arr = new int[n];
+  top = new int[k];
+  next = new int[n];
+  free = 0;
+  for(int ind = 0 ; ind < n-1 ; ind++)
+    next[ind] = ind+1; // to show free space
+  for(int ind = 0 ; ind < k ; ind++)
+    top[ind] = -1; // free stacks
+}
+void stacks::push(int val, int id)
+{
+  if(free == -1)
+  {
+    cout << "Overflow" << endl;
+    return;
+  }
+  int index = free;
+  // find next free
+  free = next[free];
+  // update next to link to previous stack nodes
+  next[index] = top[id];
+  // update top of stack
+  top[id] = index;
+  arr[index] = val;
+}
+
+int stacks::pop(int id)
+{
+    if(top[id] == -1)
+    {
+      cout << "Underflow" << endl;
+      return -1; //
+    }
+    int index = top[id];
+    // update free;
+    free = index;
+    // update top to next element
+    top[id] = next[index];
+    // update next to free element;
+    next[index] = free;
+    return arr[index];
+}
+
+void stacks::show(int id)
+{
+  int index = top[id];
+  while(index != -1)
+  {
+    cout << arr[index] << " ";
+    index = next[index];
+  }
+  cout << endl;
+}
+
+int main()
+{
+  int n = 10 , k = 3;
+  stacks s(n,k);
+  s.push(25,2);
+  s.push(20,1);
+  s.push(23,1);
+  s.push(40,2);
+  s.show(1);
+  s.show(2);
+  return 0;
+}
